@@ -1,0 +1,184 @@
+# Product Notebook Interface - Detailed Guide
+
+## Overview
+The Product Notebook is a data entry and management interface used to create, view, and edit product information in the BPAL system. This document explains the field types, functionality, and user interactions available in the notebook.
+
+---
+
+## Field Types and Visual Indicators
+
+### Open Fields (White Background)
+Fields with a white or light background are available for data entry. Users can click on these fields and input or modify information. These fields are editable and can receive user input.
+
+**Example:** The "Code" field, description fields, and the "Type" field in the product notebook are typically open fields ready for user input.
+
+### Closed Fields (Gray Background)
+Fields with a gray background are locked and cannot be edited. These fields are read-only and display information that is either system-generated, auto-populated, or intentionally restricted from user modification. Users cannot enter or change data in closed fields.
+
+**Example:** Fields that display calculated values, status fields, or fields managed by system rules may appear grayed out.
+
+---
+
+## Field Icons and Their Meanings
+
+### Magnifying Glass Icon (Lookup Table Field)
+The magnifying glass icon indicates that the field has a lookup table associated with it. This is standard functionality in BPAL for fields with this icon.
+
+**Functionality:**
+- Clicking on the magnifying glass icon opens a lookup dialog or dropdown menu
+- The lookup table contains a predefined list of valid values for that field
+- Users can select an appropriate value from the list instead of typing it manually
+- Lookup fields ensure data consistency and prevent invalid entries
+- The lookup helps users find and select the correct code or value quickly
+
+**Example:** The "Type" field in the product notebook has a magnifying glass icon, allowing users to browse and select from available product types like "BROWNGRADE".
+
+### Information Icon (Circular "i" Icon)
+Located to the right of the magnifying glass icon, this circular icon with the letter "i" provides quick access to additional information related to the code field.
+
+**Functionality:**
+- Pressing or clicking this icon opens an information popup or detail window
+- The popup displays related data and descriptive information about the selected code
+- This allows users to verify they have selected the correct code by viewing its details
+- Helps users understand what each code represents without leaving the notebook
+- Provides context-sensitive help and reference information
+
+**Example:** Clicking the "i" icon next to a product type code would display the full definition, properties, and other details about that product type.
+
+---
+
+## Tabs and Sections
+
+The Product Notebook includes multiple tabs for organizing different types of information:
+
+### Available Tabs
+- **Properties:** Contains basic product information such as code, description, category, and type
+- **Scaling:** Manages size, weight, or dimension scaling parameters
+- **Test:** Contains testing criteria and quality assurance information
+- **Other:** Miscellaneous additional product information and properties
+- **Delivery Point:** Information related to delivery locations and logistics
+- **Product Group:** Classification and grouping information for the product
+- **Unit Of Measure:** Definition of measurement units used for the product
+- **Audit:** Historical tracking and audit trail information about product changes
+
+Each tab organizes related fields logically, allowing users to navigate between different categories of product information.
+
+---
+
+## Field Components - Key Example
+
+In the "Properties" tab shown:
+
+**Code:** An open field for entering the product code (e.g., "012")
+
+**Description:** Contains bilingual descriptions (French and English) with an open field format where users can enter or edit product names
+
+**Status:** A closed field showing whether the product is "Active" or "Inactive" - this is typically system-managed
+
+**Category:** Displays the product category (e.g., "Recycle Payable") - may be open or closed depending on system configuration
+
+**Type:** An open field with a lookup icon, allowing selection from a list of product types (e.g., "BROWNGRADE")
+
+---
+
+## Control Buttons
+
+### OK Button
+- **Location:** Bottom left of the notebook window
+- **Function:** Saves all user-entered or modified data to the appropriate database tables
+- **Behavior:** After saving, the notebook closes automatically
+- **Use When:** You have finished all data entry and want to save and exit the notebook
+
+### Cancel Button
+- **Location:** Bottom left of the notebook window, next to OK button; Also represented by the X button in the top right corner of the notebook
+- **Function:** Closes the notebook
+- **Behavior - If Changes Were Made:** If the user has made any changes to data within the notebook, the Cancel button (or X in top right corner) will trigger a confirmation dialog asking the user if they want to save their changes before closing. This allows the user to choose between saving changes or discarding them.
+- **Behavior - If No Changes Were Made:** If no data has been changed in the notebook, pressing the Cancel button or the X in the top right corner will close the notebook immediately without any user confirmation prompt.
+- **Use When:** You want to exit the notebook. If you have made changes, you will be prompted to save or discard them. If you haven't made changes, the notebook closes immediately.
+
+### Apply Button
+- **Location:** Bottom left of the notebook window, next to Cancel button
+- **Function:** Saves all user-entered or modified data to the database, identical to OK button functionality
+- **Behavior:** After saving, the notebook **remains open** - unlike OK, it does not close
+- **Use When:** You want to save your progress but continue working on the same product or need to make additional changes
+
+---
+
+## Change Detection and Confirmation Dialogs
+
+### Smart Change Detection
+BPAL notebooks include intelligent change detection that monitors whether the user has made any modifications to the data within the notebook.
+
+### Confirmation Behavior When Closing
+
+**Scenario 1: User Made Changes and Presses Cancel or X**
+- The notebook detects that data has been modified
+- A confirmation dialog appears asking: "Do you want to save your changes?"
+- User options:
+  - **Save:** Saves all changes and closes the notebook
+  - **Don't Save:** Discards all changes and closes the notebook
+  - **Cancel:** Returns to the notebook to continue editing
+
+**Scenario 2: User Made No Changes and Presses Cancel or X**
+- The notebook detects that no data has been modified
+- The notebook closes immediately without any confirmation prompt
+- No dialog appears - the action is instantaneous
+
+### X Button in Top Right Corner
+The X button in the top right corner of the notebook window behaves identically to the Cancel button:
+- If changes were made, it triggers the confirmation dialog
+- If no changes were made, it closes the notebook immediately
+
+### Why This Matters
+This change detection feature protects users from accidentally losing work. By prompting for confirmation only when changes exist, it also prevents unnecessary dialogs when simply reviewing data without making edits.
+
+---
+
+### Lookup Table Fields - Standard Feature
+Any field in BPAL that displays a magnifying glass icon follows the same standard lookup functionality:
+- Click the magnifying glass to open the lookup table
+- Browse or search for the desired value
+- Select from the predefined list
+- This ensures data integrity and consistency across the system
+
+### Information Popup - Standard Feature
+The circular "i" icon next to lookup fields is a standard feature in BPAL:
+- Provides context-sensitive information about the selected value
+- Helps users verify their selection
+- Displays additional properties and details about the code
+- Available for any lookup field with this icon
+
+---
+
+## Common User Workflows
+
+### To Enter or Edit Product Information
+1. Open the Product Notebook
+2. Navigate to the appropriate tab (Properties, Scaling, Test, etc.)
+3. Locate the open (white background) field you want to edit
+4. Click on the field and enter or modify the data
+5. If the field has a magnifying glass icon, click it to select from a lookup table
+6. Click **Apply** to save and continue editing, or **OK** to save and close
+
+### To View Additional Details About a Selection
+1. Click the magnifying glass icon to open the lookup table
+2. Select the desired value
+3. Click the circular "i" icon next to the field
+4. Review the information popup that appears
+5. Close the popup and proceed with your work
+
+### To Discard Changes
+1. Click the **Cancel** button
+2. All unsaved changes will be discarded
+3. The notebook will close without modifying the database
+
+---
+
+## Best Practices
+
+1. **Use Lookup Fields:** Always use the magnifying glass icon for fields that have it - this ensures you select valid values
+2. **Verify Selections:** Use the "i" icon to confirm you have selected the correct code before saving
+3. **Use Apply for Ongoing Work:** If making multiple changes to a product, use Apply to save incrementally
+4. **Use OK for Final Saves:** When finished with all edits, use OK to save and close in one action
+5. **Review Before OK:** Before clicking OK, verify all entries are complete and accurate
+6. **Use Cancel Cautiously:** Remember Cancel discards all changes - only use it if you want to exit without saving

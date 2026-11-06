@@ -1,0 +1,20 @@
+<service>
+  <id>BPALCaddy</id>
+  <name>BPAL Caddy Reverse Proxy</name>
+  <description>Reverse proxy for BPAL Help Assistant</description>
+
+  <executable>C:\BPALHelpServer\proxy\caddy.exe</executable>
+  <arguments>run --config C:\BPALHelpServer\proxy\Caddyfile --adapter caddyfile</arguments>
+  <workingdirectory>C:\BPALHelpServer\proxy</workingdirectory>
+  <env name="XDG_DATA_HOME" value="C:\BPALHelpServer\proxy\data"/>
+  <env name="XDG_CONFIG_HOME" value="C:\BPALHelpServer\proxy\config"/>
+  <startmode>Automatic</startmode>
+  <delayedAutoStart>true</delayedAutoStart>
+
+  <logpath>C:\BPALHelpServer\logs</logpath>
+  <log mode="roll"/>
+
+  <onfailure action="restart" delay="10 sec"/>
+  <onfailure action="restart" delay="30 sec"/>
+  <resetfailure>1 hour</resetfailure>
+</service>

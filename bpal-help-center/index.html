@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title data-i18n="title">BPAL Help Center</title>
+    <!-- Quill Library -->
+    <script src="JS/quill-main.js"></script>
+    <link href="CSS/quill.css" rel="stylesheet">
+    <link rel="stylesheet" href="./CSS/tips.css">
+    
+</head>
+
+<body>
+    <div class="app-container">
+
+        <div class="tab-navigation">
+            <button class="tab-button active" data-tab="whatsnew-tab" onclick="switchTab('whatsnew-tab')"
+                data-i18n="nav_whatsnew">What's New</button>
+            <button class="tab-button " data-tab="tips-tab" onclick="switchTab('tips-tab')" data-i18n="nav_tips">Tips &
+                Tricks</button>
+            <button class="tab-button" data-tab="chat-tab" onclick="switchTab('chat-tab')"
+                data-i18n="nav_assistant">Assistant</button>
+        </div>
+
+        <div class="tabs-wrapper">
+
+            <div id="tips-tab" class="tab-content ">
+                <div class="main-container">
+                    <div class="sidebar" id="sidebar">
+                        <div class="empty-state">
+                            <p data-i18n="no_tips">No tips available</p>
+                        </div>
+                    </div>
+
+                    <div class="content-area" id="contentArea">
+                        <div class="empty-state">
+                            <h2 data-i18n="welcome_title">Welcome</h2>
+                            <p data-i18n="welcome_msg">Select a tip from the sidebar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="whatsnew-tab" class="tab-content active">
+                <div class="whatsnew-container">
+                    <div class="whatsnew-content">
+                        <div class="whatsnew-header">
+                            <h2 data-i18n="whatsnew_header">What's New</h2>
+                            <p data-i18n="whatsnew_sub">Latest updates and improvements</p>
+                        </div>
+
+                        <div class="update-list" id="whatsNewList">
+                            <div class="empty-state">
+                                <p data-i18n="no_updates">No updates found</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="whatsnew-footer"
+                    style="display: flex; align-items: center; padding: 16px; border-top: 1px solid #e5e7eb; background-color: #fff; flex-shrink: 0;">
+                    <label style="display: flex; align-items: center; cursor: pointer; user-select: none; gap: 8px;">
+                        <input type="checkbox" id="showOnStartupWhatsNew" onchange="toggleStartupSetting(this)"
+                            style="width: 15px; height: 15px; cursor: pointer; accent-color: #6b7280;">
+                        <span data-i18n="always_show_on_login" style="font-size: 13px; color: #374151; font-weight: 500;">Always show on login</span>
+                    </label>
+                </div>
+            </div>
+
+          <div id="chat-tab" class="tab-content">
+    <div class="chat-container">
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-welcome">
+                <h2 data-i18n="chat_title">BPAL Assistant</h2>
+                <p data-i18n="chat_sub">Ask anything about the application</p>
+            </div>
+        </div>
+
+    <!-- Support Card with SVG Icons - Fixed Layout -->
+<div class="support-card" id="supportCard" style="display: none;">
+    <div class="support-card-content">
+        <!-- Close button - Top Right -->
+        <button class="support-card-close" onclick="hideSupportCard()" title="Dismiss">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14">
+                <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </button>
+        
+        <!-- Main Content Row -->
+        <div class="support-card-row">
+            <!-- Question Mark Icon -->
+            <div class="support-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40">
+                    <circle cx="12" cy="12" r="10" fill="none" stroke="#2563eb" stroke-width="2"/>
+                    <path d="M9 9c0-1.7 1.3-3 3-3s3 1.3 3 3c0 1.5-1 2-2 2.5-.5.3-1 .7-1 1.5" 
+                          fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="12" cy="17" r="1" fill="#2563eb"/>
+                </svg>
+            </div>
+            
+            <!-- Text Content -->
+            <div class="support-card-text">
+                <h4 data-i18n="support_title">Need more help?</h4>
+                <p data-i18n="support_desc">Can't find what you're looking for? Send your conversation to our support team.</p>
+            </div>
+        </div>
+        
+        <!-- Button Row - Separate -->
+        <div class="support-card-actions">
+            <button class="support-card-button" onclick="handleSendEmail()">
+                <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
+                    <rect x="2" y="4" width="20" height="16" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <polyline points="2,6 12,13 22,6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span data-i18n="support_button">Contact CDCorp Support</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+        <div class="chat-input-container">
+            <div class="chat-input-wrapper">
+                <textarea id="chatInput" class="chat-input" data-i18n-placeholder="chat_placeholder"
+                    placeholder="Type your message..." rows="1"></textarea>
+                <button class="send-button" onclick="sendMessage()" data-i18n="chat_send">Send</button>
+            </div>
+            <!-- Small subtle link for manual access -->
+            <div class="chat-footer-link">
+                <a href="#" onclick="showSupportCard(); return false;" data-i18n="need_help_link">
+                    Didn't find your answer? Contact CDCorp Support
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+        </div>
+    </div>
+
+    <script src="./JS/tips.js"></script>
+    <script src="./JS/quill.js"></script>
+    <script type="module" src="./JS/chat.js"></script>
+</body>
+
+</html>

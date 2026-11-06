@@ -1,0 +1,2 @@
+## Overview
+The Product Notebook is a data entry and management interface used to create, view, and edit product information in the BPAL system. This document explains the field types, functionality, and user interactions available in the notebook.

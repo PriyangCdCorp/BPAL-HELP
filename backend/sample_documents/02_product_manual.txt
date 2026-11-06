@@ -1,0 +1,7 @@
+# Product Manual
+
+The application supports user authentication.
+
+Users can create projects and organize documents.
+
+The application supports administrator and standard user roles.

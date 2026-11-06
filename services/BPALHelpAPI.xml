@@ -1,0 +1,21 @@
+
+<service>
+  <id>BPALHelpAPI</id>
+  <name>BPAL Help Assistant API</name>
+  <description>BPAL Help Assistant FastAPI backend</description>
+
+  <executable>C:\BPALHelpServer\backend\.venv\Scripts\python.exe</executable>
+  <arguments>-m uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 1</arguments>
+  <workingdirectory>C:\BPALHelpServer\backend</workingdirectory>
+  <env name="HF_HOME" value="C:\BPALHelpServer\models"/>
+  <env name="HF_HUB_CACHE" value="C:\BPALHelpServer\models\hub"/>
+  <startmode>Automatic</startmode>
+  <delayedAutoStart>true</delayedAutoStart>
+
+  <logpath>C:\BPALHelpServer\logs</logpath>
+  <log mode="roll"/>
+
+  <onfailure action="restart" delay="10 sec"/>
+  <onfailure action="restart" delay="30 sec"/>
+  <resetfailure>1 hour</resetfailure>
+</service>

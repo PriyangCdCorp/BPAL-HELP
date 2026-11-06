@@ -1,0 +1,77 @@
+{
+  "name": "electron-app",
+  "version": "1.0.0",
+  "description": "BPAL Help center",
+  "main": "main.js",
+  "homepage": "./",
+  "author": "CDCorp",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "okf:build": "node scripts/buildOkfBundle.js",
+    "okf:deploy": "node scripts/buildOkfBundle.js ./documents C:\\CDCSOFT --knowledge",
+    "dist": "electron-builder --win --publish never",
+    "test:cms": "node --test tests/cmsHelpContent.test.js",
+    "test:api": "node --test tests/apiChatClient.test.js",
+    "check:api": "node scripts/checkApiConnection.js",
+    "test:launch": "node --test tests/launchQuestion.test.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "fs-extra": "^11.2.0",
+    "gray-matter": "^4.0.3",
+    "winreg": "^1.2.4"
+  },
+  "devDependencies": {
+    "electron": "^40.10.6",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.cdcsoft.helpcenter",
+    "productName": "BPAL Help Center",
+    "files": [
+      "main.js",
+      "cmsHelpContent.js",
+      "apiChatClient.js",
+      "customerApiConfig.js",
+      "preload.js",
+      "index.html",
+      "registryHelper.js",
+      "llmService.js",
+      "chatPipeline.js",
+      "okfKnowledgeBase.js",
+      "retrieval.js",
+      "answerCache.js",
+      "tokenBudget.js",
+      "CSS/**/*",
+      "JS/**/*",
+      "images/**/*",
+      "package.json",
+      "launchQuestion.js"
+    ],
+    "extraResources": [
+      {
+        "from": "okf",
+        "to": "okf"
+      }
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}

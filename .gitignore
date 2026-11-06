@@ -1,0 +1,79 @@
+# Production data
+/storage/
+/models/
+/logs/
+/backups/
+
+# Python
+**/.venv/
+**/venv/
+**/__pycache__/
+**/.pytest_cache/
+*.pyc
+
+# Node / Electron
+**/node_modules/
+**/dist/
+**/release/
+**/build/
+**/out/
+**/.vite/
+
+# Secrets and environment
+.env
+.env.*
+**/.env
+**/.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+*.sqlite
+*.sqlite3
+*.db
+
+# Runtime files
+*.log
+*.pid
+*.tmp
+
+# Local configuration
+*.local
+# Caddy runtime and certificates
+/proxy/data/
+/proxy/config/caddy/autosave.json
+
+# DuckDNS runtime/configuration - review before tracking
+/services/duckdns/
+
+# TypeScript build cache
+*.tsbuildinfo
+
+# Certificate and credential formats
+*.crt
+*.cer
+*.p7b
+*.p8
+*.p12
+*.pfx
+*.pem
+*.key
+*.jks
+
+# Additional databases
+*.sqlite
+*.sqlite3
+*.sqlite3-*
+*.db
+*.db-*
+
+# Local secrets
+.env
+.env.*
+*.secret
+*.secrets
+credentials.json
+secrets.json
+
+# Historical frontend builds
+/admin-portal/dist-before-*/

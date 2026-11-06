@@ -1,0 +1,44 @@
+DESCRIPTIONS ET UTILISATION DES ÉLÉMENTS DE MENU
+1. OPTION : Déconnexion
+Emplacement : Fichier > Déconnexion
+Fonction : Met fin à la session de l'utilisateur actuel dans l'application.
+Comportement : Renvoie l'utilisateur à l'écran de connexion. Ne ferme pas la fenêtre de l'application, seulement la session active.
+Cas d'utilisation : Utilisez cette option lorsque vous avez terminé de travailler mais souhaitez laisser l'application ouverte pour qu'un autre utilisateur puisse se connecter.
+2. OPTION : Verrouillage de sécurité
+Emplacement : Fichier > Verrouillage de sécurité
+Fonction : Verrouille instantanément l'interface de l'application.
+Comportement : Masque le contenu de l'écran actuel et nécessite un mot de passe pour reprendre.
+Cas d'utilisation : Utilisez cette option lorsque vous quittez votre poste de travail (par exemple, pour le déjeuner ou une pause) afin d'empêcher tout accès non autorisé sans vous déconnecter complètement.
+3. OPTION : Propriétés de l'utilisateur
+Emplacement : Fichier > Propriétés de l'utilisateur
+Fonction : Ouvre la fenêtre de configuration de l'utilisateur actuellement connecté.
+Comportement : Affiche une boîte de dialogue contenant les détails de l'utilisateur (autorisations, nom d'utilisateur, préférences).
+Cas d'utilisation : Utilisez cette option pour consulter les détails du compte ou modifier des paramètres utilisateur spécifiques.
+4. OPTION : Fichiers journaux >
+Emplacement : Fichier > Fichiers journaux
+Indicateur visuel : Contient une flèche orientée vers la droite (>), indiquant un sous-menu.
+Fonction : Accède aux journaux d'historique et de suivi des erreurs du système.
+Comportement : Le survol de cet élément révélera une liste secondaire de types de journaux spécifiques.
+Cas d'utilisation : Utilisé pour le dépannage des erreurs ou l'audit de l'historique du système.
+5. OPTION : Quitter F12
+Emplacement : Fichier > Quitter F12
+Touche de raccourci : F12
+Fonction : Ferme complètement l'application Administration BPAL.
+Comportement : Met fin au logiciel.
+Cas d'utilisation : Utilisez cette option lorsque vous avez complètement terminé avec l'application et souhaitez la fermer sur votre ordinateur.
+
+
+Q : Comment fermer le programme BPAL ?
+R : Vous pouvez fermer le programme en cliquant sur « Fichier » puis en sélectionnant « Quitter ». Alternativement, vous pouvez appuyer sur la touche F12 de votre clavier.
+
+Q : Je vais déjeuner, comment sécuriser mon écran ?
+R : Allez dans le menu « Fichier » et sélectionnez « Verrouillage de sécurité ». Cela verrouillera l'écran sans vous déconnecter.
+
+Q : Où puis-je voir les détails de mon compte utilisateur ?
+R : Naviguez vers « Fichier » et sélectionnez « Propriétés de l'utilisateur » pour consulter les paramètres de votre compte.
+
+Q : Où se trouvent les journaux d'erreurs ?
+R : Allez dans le menu « Fichier » et survolez « Fichiers journaux ». Il s'agit d'un sous-menu qui vous montrera les journaux disponibles.
+
+Q : Quelle est la différence entre Déconnexion et Quitter ?
+R : « Déconnexion » met fin à votre session actuelle mais garde l'application BPAL ouverte. « Quitter » (ou F12) ferme complètement l'application.

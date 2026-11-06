@@ -1,0 +1,51 @@
+
+MENU ITEM DESCRIPTIONS & USAGE
+
+1. OPTION: Logout
+   - Location: File > Logout
+   - Function: Terminates the current user's session within the application.
+   - Behavior: Returns the user to the login screen. It does not close the application window, only the active session.
+   - Use Case: Use this when you are finished working but want to leave the application open for another user to log in.
+
+2. OPTION: Security Lockout
+   - Location: File > Security Lockout
+   - Function: Locks the application interface instantly.
+   - Behavior: Hides the current screen contents and requires a password to resume.
+   - Use Case: Use this when stepping away from your desk (e.g., for lunch or a break) to prevent unauthorized access without fully logging out.
+
+3. OPTION: User Properties
+   - Location: File > User Properties
+   - Function: Opens the configuration window for the currently logged-in user.
+   - Behavior: Displays a dialog box containing user details (permissions, username, preferences).
+   - Use Case: Use this to view account details or modify specific user settings.
+
+4. OPTION: Log Files >
+   - Location: File > Log Files
+   - Visual Indicator: Contains a right-facing arrow (>), indicating a sub-menu.
+   - Function: Accesses the system's history and error tracking logs.
+   - Behavior: Hovering over this item will reveal a secondary list of specific log types.
+   - Use Case: Used for troubleshooting errors or auditing system history.
+
+5. OPTION: Exit F12
+   - Location: File > Exit F12
+   - Shortcut Key: F12
+   - Function: Closes the BPAL Administration application completely.
+   - Behavior: Terminates the software.
+   - Use Case: Use this when you are completely done with the application and wish to close it on your computer.
+
+
+
+Q: How do I close the BPAL program?
+A: You can close the program by clicking "File" and then selecting "Exit". Alternatively, you can press the F12 key on your keyboard.
+
+Q: I am going to lunch, how do I secure my screen?
+A: Go to the "File" menu and select "Security Lockout". This will lock the screen without logging you out.
+
+Q: Where can I see my user details?
+A: Navigate to "File" and select "User Properties" to view your account settings.
+
+Q: Where are the error logs located?
+A: Go to the "File" menu and hover over "Log Files". This is a sub-menu that will show you the available logs.
+
+Q: What is the difference between Logout and Exit?
+A: "Logout" ends your current session but keeps the BPAL application open. "Exit" (or F12) closes the application completely.

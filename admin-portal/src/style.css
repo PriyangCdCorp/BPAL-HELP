@@ -1,0 +1,199 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+:root{font-family:Inter,system-ui,sans-serif;color:#202938;background:#f5f7fb;font-synthesis:none}*{box-sizing:border-box}body{margin:0}button,input,select,textarea{font:inherit}button{border:0;border-radius:8px;background:#2459d3;color:#fff;padding:10px 14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px}button:disabled{opacity:.55;cursor:not-allowed}.secondary{background:#fff;color:#354052;border:1px solid #dce2ec}.card{background:white;border:1px solid #e5eaf1;border-radius:13px;box-shadow:0 3px 14px #17243a08}.muted{color:#788396}.login-wrap{min-height:100vh;display:grid;place-items:center;padding:24px}.login{width:min(420px,100%);padding:32px;display:grid;gap:16px}.brand{font-size:25px;font-weight:800;letter-spacing:-1px}.brand span{color:#2459d3}.login label,.editor label{display:grid;gap:7px;font-size:13px;font-weight:600;color:#465267}.login input,.editor input,.editor select,.editor textarea{border:1px solid #dce2ec;border-radius:8px;padding:11px 12px;outline:none;color:#202938;background:#fff}.login input:focus,.editor input:focus,.editor textarea:focus{border-color:#6387e5}.login small{color:#8590a1;line-height:1.5}.error{color:#b42318;font-size:13px}.shell{min-height:100vh;display:grid;grid-template-columns:245px 1fr}.shell > aside{background:#fff;border-right:1px solid #e6eaf0;padding:25px 16px;display:flex;flex-direction:column;gap:10px}.shell > aside .brand{padding:0 12px 32px}.nav-label{font-size:10px;letter-spacing:1.2px;color:#9aa3b1;font-weight:700;padding:0 12px 8px}.nav{background:transparent;color:#586477;justify-content:flex-start;font-weight:500}.nav.active{background:#edf2ff;color:#2459d3}.side-bottom{margin-top:auto;border-top:1px solid #edf0f4;padding:18px 4px 0;display:flex;align-items:center;gap:10px}.avatar{width:34px;height:34px;border-radius:50%;background:#e6edff;color:#2459d3;display:grid;place-items:center;font-weight:700}.user{display:grid;gap:3px;flex:1;font-size:12px}.user small{color:#8590a1}.icon-btn{background:transparent;color:#647084;padding:7px}.main{padding:38px clamp(22px,4vw,58px);max-width:1500px;width:100%;margin:auto}.main > header{display:flex;justify-content:space-between;align-items:center;gap:20px}h1{font-size:26px;margin:0 0 7px}.main > header p{margin:0;font-size:13px}.header-actions{display:flex;gap:9px}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin:30px 0}.stat{background:#fff;border:1px solid #e5eaf1;border-radius:12px;padding:17px;display:grid;gap:8px}.stat svg{color:#6582c9}.stat small{color:#7c8798}.stat strong{font-size:25px}.list-head{display:flex;align-items:center;justify-content:space-between;margin:30px 0 14px}.list-head h2{font-size:18px;margin:0}.list-head span{color:#7c8798;font-size:12px}.items{display:grid;gap:12px}.item{padding:18px;display:flex;justify-content:space-between;align-items:center;gap:20px}.item-title{font-weight:700}.meta{font-size:12px;color:#8490a1;margin:6px 0 10px}.pills{display:flex;gap:7px}.pill{font-size:10px;border-radius:20px;padding:4px 8px;background:#f0f2f6;color:#586477;font-weight:700}.pill.published{background:#e8f7ee;color:#18794e}.pill.draft{background:#fff5df;color:#946200}.pill.archived{background:#f1f1f1;color:#777}.item-actions{display:flex;align-items:center;gap:8px}.item-actions button{font-size:12px;padding:8px 10px}.upload{display:inline-flex;align-items:center;gap:6px;padding:8px 10px;border-radius:8px;font-size:12px;cursor:pointer}.upload input{display:none}.empty{padding:55px 20px;display:grid;justify-items:center;gap:10px;color:#7d899b}.empty b{color:#364154}.empty p{margin:0 0 8px;font-size:13px}.notice{background:#edf5ff;border:1px solid #cfe0ff;color:#244d9a;border-radius:9px;padding:11px 14px;margin-top:20px;font-size:13px;display:flex;justify-content:space-between}.notice button{background:transparent;color:inherit;padding:0}.overlay{position:fixed;inset:0;background:#18223588;display:grid;place-items:center;padding:20px;z-index:5}.editor{width:min(900px,100%);max-height:94vh;overflow:auto;padding:25px;display:grid;gap:17px}.editor-head{display:flex;justify-content:space-between;align-items:flex-start}.editor-head h2{margin:0 0 5px;font-size:20px}.editor-head p{margin:0;font-size:12px}.lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.lang-grid h3{font-size:14px;margin:0 0 12px}.lang-grid>div{display:grid;gap:12px;align-content:start}.editor textarea{resize:vertical;line-height:1.5}.editor-foot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #edf0f4;padding-top:15px}.editor-foot span{font-size:12px}@media(max-width:800px){.shell{grid-template-columns:1fr}.shell > aside{position:static;flex-direction:row;align-items:center;flex-wrap:wrap;padding:12px}.brand{padding:0!important;margin-right:20px}.nav-label{display:none}.side-bottom{margin:0 0 0 auto;border:0;padding:0}.main{padding:24px 16px}.main > header{align-items:flex-start;flex-direction:column}.item{align-items:flex-start;flex-direction:column}.lang-grid{grid-template-columns:1fr}.stats{gap:8px}.stat{padding:12px}}
+.ql-toolbar.ql-snow{border:1px solid #dce2ec;border-radius:8px 8px 0 0;background:#fafbfc}.ql-container.ql-snow{border:1px solid #dce2ec;border-top:0;border-radius:0 0 8px 8px;min-height:155px}.ql-editor{min-height:155px;font:14px/1.55 Inter,system-ui,sans-serif}.editor .ql-toolbar button{color:#354052}
+
+.editor .ql-toolbar button{background:transparent;color:#354052;padding:3px;border-radius:3px}
+.release-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.editor label.check{display:flex;align-items:center;gap:8px;align-self:end;padding-bottom:12px}.editor label.check input{width:auto}@media(max-width:800px){.release-grid{grid-template-columns:1fr}}
+
+/* Milestone 2.1: modal footer and responsive editing */
+.overlay{padding:clamp(12px,2.5vh,28px);overflow:hidden}
+.editor.card{width:min(1180px,100%);height:min(94dvh,950px);max-height:94dvh;overflow:hidden;padding:0;display:flex;flex-direction:column;gap:0;border-radius:18px;min-height:0}
+.editor-scroll{overflow-y:auto;overflow-x:hidden;flex:1;min-height:0;padding:28px 30px 24px;display:grid;align-content:start;gap:18px}
+.editor-head{padding-bottom:12px;border-bottom:1px solid #edf0f4}
+.editor-foot{flex-shrink:0;position:relative;background:#fff;padding:16px 30px;border-top:1px solid #e5eaf1;display:flex;gap:16px;justify-content:space-between;align-items:center;z-index:2}
+.editor-foot button{flex-shrink:0}
+.editor-foot span{max-width:70%;line-height:1.5}
+.lang-grid{min-width:0;gap:22px}
+.lang-grid>div{min-width:0}
+.editor .ql-toolbar{display:flex;flex-wrap:wrap;gap:3px}
+.editor .quill{min-width:0}
+.editor .ql-editor{min-height:260px;overflow-wrap:anywhere}
+.editor .ql-editor img{display:block;max-width:100%;height:auto;margin:14px auto;border-radius:6px}
+.editor .ql-toolbar button{min-width:22px;min-height:22px}
+.editor .ql-toolbar .ql-picker{font-size:13px}
+.editor .ql-container{min-height:260px}
+.editor input,.editor select{min-width:0;width:100%}
+@media(max-width:850px){.editor.card{height:96dvh;max-height:96dvh}.editor-scroll{padding:20px 16px}.editor-foot{padding:12px 16px}.lang-grid{grid-template-columns:minmax(0,1fr)}.release-grid{grid-template-columns:1fr}.editor-foot span{max-width:60%}}
+
+/* Chatbot documents */
+.docs-card{padding:28px;margin-top:22px}
+.docs-card h2{margin:0 0 6px;font-size:19px;color:#202938}
+.docs-card .muted{font-size:13px;line-height:1.6;margin:0}
+.docs-card-head{display:flex;align-items:center;gap:15px;margin-bottom:24px}
+.docs-icon,.doc-file-icon{width:46px;height:46px;border-radius:12px;background:#eaf0ff;color:#285bd0;display:grid;place-items:center;flex-shrink:0}
+.docs-label{display:grid;gap:9px;font-size:13px;font-weight:650;color:#465267;max-width:520px}
+.docs-select{appearance:auto;width:100%;padding:12px 14px;border:1px solid #dce2ec;border-radius:9px;background:white;color:#202938;font-size:14px}
+.docs-form{margin-top:22px}
+.dropzone{border:2px dashed #cad6ed;border-radius:13px;min-height:176px;background:#f9fbff;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:9px;color:#53627a;cursor:pointer;text-align:center;padding:24px;transition:background .15s,border-color .15s}
+.dropzone:hover,.dropzone.dragging{background:#eef4ff;border-color:#2459d3}
+.dropzone svg{color:#3766d4}
+.dropzone strong{font-size:14px;color:#2c3a52;overflow-wrap:anywhere}
+.dropzone span,.dropzone small{font-size:12px;color:#79879d}
+.dropzone input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.docs-actions{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-top:18px}
+.docs-list-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:20px}
+.docs-empty{border:1px dashed #dce2ec;border-radius:12px;background:#fafcff;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;color:#8793a6;text-align:center;padding:20px}
+.docs-empty strong{color:#44516a;font-size:14px}
+.docs-empty span{font-size:12px}
+.doc-item{border-top:1px solid #edf0f4;padding:16px 0}
+.doc-item .item-main{flex:1;min-width:0}
+.doc-item .item-title{overflow-wrap:anywhere}
+.doc-item .meta{margin-bottom:0}
+@media(max-width:700px){.docs-card{padding:18px}.docs-actions,.docs-list-head{flex-direction:column;align-items:stretch}.docs-actions button{justify-content:center}}
+
+/* Full-screen content authoring workspace */
+.workspace-overlay{position:fixed;inset:0;background:#f4f7fc;z-index:30;overflow:hidden}
+.workspace{height:100dvh;display:flex;flex-direction:column;min-width:0}
+.workspace-header{background:white;border-bottom:1px solid #e2e8f0;padding:15px clamp(18px,3vw,48px);display:flex;align-items:center;justify-content:space-between;gap:20px;flex-shrink:0}
+.workspace-heading,.workspace-actions{display:flex;align-items:center;gap:17px}
+.workspace-heading h2{font-size:20px;margin:0 0 4px;color:#18263f}.workspace-heading p{margin:0;color:#8894a6;font-size:12px}
+.workspace-actions{flex-wrap:wrap}.view-switch{padding:4px;display:flex;gap:4px;border-radius:9px;background:#eef2f8}.view-switch button{background:transparent;color:#556278;font-size:13px;padding:9px 12px}.view-switch button.selected{background:#fff;color:#2459d3;box-shadow:0 1px 5px #12275020}
+.workspace-body{overflow:auto;flex:1;min-height:0;padding:25px clamp(16px,3vw,45px) 50px}
+.workspace-meta{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:22px;padding:21px;background:white;border:1px solid #e4eaf2;border-radius:14px;align-items:end}
+.workspace-meta label{display:grid;gap:8px;color:#4d5b73;font-size:12px;font-weight:650;min-width:190px;flex:1}
+.workspace-meta input,.workspace-meta select,.language-panel input{border:1px solid #dce3ee;border-radius:8px;min-width:0;width:100%;padding:12px;color:#202938;background:white}
+.workspace-meta .check{display:flex;flex-direction:row;align-items:center;flex:0 0 auto;gap:8px}.workspace-meta .check input{width:auto}
+.workspace-editors{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;align-items:stretch}
+.language-panel{min-width:0;background:white;border:1px solid #e4eaf2;border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:17px}
+.language-panel label{display:grid;gap:9px;color:#4d5b73;font-size:12px;font-weight:650}.language-heading{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #edf0f5;padding-bottom:13px}
+.language-heading h3{font-size:17px;margin:0;color:#263650}.language-heading span{color:#3764c4;background:#eef3ff;border-radius:7px;padding:5px 9px;font-size:11px;font-weight:750}
+.rich-field{min-width:0;display:flex;flex-direction:column;gap:8px;flex:1}.rich-label{color:#4d5b73;font-size:12px;font-weight:650;display:grid;gap:4px}.rich-label span{font-size:11px;font-weight:400;color:#8791a1}
+.language-panel .quill{min-width:0;display:flex;flex-direction:column}.language-panel .ql-toolbar{display:flex;flex-wrap:wrap;gap:3px;background:#fafcff;border:1px solid #dce3ee;border-radius:8px 8px 0 0}
+.language-panel .ql-toolbar button{background:transparent;color:#44516b;padding:3px;border-radius:3px}.language-panel .ql-container{min-height:480px;border-color:#dce3ee;border-radius:0 0 8px 8px}
+.language-panel .ql-editor{min-height:480px;overflow-wrap:anywhere;font-size:14px;line-height:1.65}.language-panel .ql-editor img{max-width:100%;height:auto;display:block;margin:14px auto;border-radius:7px}
+.workspace-notice{display:flex;justify-content:space-between;align-items:center;margin:12px clamp(16px,3vw,45px) 0;border-radius:9px;background:#e9f1ff;color:#1c478e;padding:7px 14px;font-size:13px}
+.workspace-preview{padding:28px 20px 60px;overflow:auto;flex:1;background:#edf2f8}
+.preview-controls{max-width:1020px;margin:0 auto 16px;display:flex;align-items:center;justify-content:space-between;gap:20px}.preview-controls strong{display:flex;align-items:center;gap:8px;color:#243550}.preview-controls p{margin:6px 0 0;color:#8290a6;font-size:12px}
+.preview-langs{display:flex;gap:4px;background:#e8eef7;padding:4px;border-radius:9px}.preview-langs button{background:transparent;color:#58677d;padding:9px 12px;font-size:12px}.preview-langs button.active{background:#fff;color:#2459d3;box-shadow:0 1px 5px #17243a18}
+.client-frame{max-width:1020px;margin:auto;background:white;border:1px solid #dfe7f1;border-radius:14px;min-height:530px;overflow:hidden;box-shadow:0 12px 35px #2537520d}
+.client-topbar{padding:19px 28px;border-bottom:1px solid #e9edf4;display:flex;justify-content:space-between;color:#2c456f;gap:10px}.client-topbar span{font-size:12px;color:#7f8ba0}
+.client-article{max-width:800px;margin:auto;padding:36px 34px 60px}.client-breadcrumb{font-size:12px;color:#71819b;margin-bottom:18px}.client-article h1{font-size:28px;line-height:1.2;color:#213452;margin:0 0 26px}
+.client-rich{font-size:15px;line-height:1.75;color:#34445c;overflow-wrap:anywhere}.client-rich img{max-width:100%;height:auto;display:block;border-radius:7px;margin:20px auto}.client-rich h1,.client-rich h2,.client-rich h3{line-height:1.35;color:#263954}
+.client-rich p{margin:0 0 14px}.client-rich li{margin:5px 0}.client-rich a{color:#2459d3}
+@media(max-width:950px){.workspace-editors{grid-template-columns:1fr}.workspace-header{align-items:flex-start;flex-direction:column}.workspace-actions{width:100%;justify-content:space-between}.language-panel .ql-container,.language-panel .ql-editor{min-height:300px}}
+@media(max-width:560px){.workspace-heading h2{font-size:17px}.workspace-header{gap:8px;padding:10px 14px}.workspace-body{padding:14px}.language-panel{padding:14px}.workspace-meta{padding:14px}.preview-controls,.client-topbar{flex-direction:column;align-items:flex-start}.client-article{padding:24px 18px}.workspace-actions button{font-size:12px}}
+
+
+/* Help Center-style content preview, scoped to avoid portal styling collisions.
+   Layout and spacing derived from the uploaded help-center/CSS/tips.css. */
+.hc-viewport {display:flex;flex-direction:column;height:min(76vh,760px);min-height:420px;overflow:hidden;border:1px solid #d1d5db;border-radius:6px;background:#fff;color:#111827;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;text-align:left}
+.hc-viewport *{box-sizing:border-box}
+.hc-tab-navigation{display:flex;flex-shrink:0;background:#fff;border-bottom:1px solid #1f1f1f;min-height:50px}
+.hc-tab-navigation>span{padding:14px 24px;border-bottom:3px solid transparent;color:#6b7280;font-size:14px;font-weight:500;white-space:nowrap}
+.hc-tab-navigation>span.hc-tab-active{color:#111827;border-bottom-color:#6b7280;background:#f9fafb}
+.hc-tips-main{display:flex;flex:1;min-height:0;overflow:hidden}
+.hc-tips-sidebar{width:280px;flex-shrink:0;border-right:1px solid #aaa;background:#fff;overflow:auto}
+.hc-sidebar-heading{padding:14px 16px;display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:#1f2937}
+.hc-chevron{color:#6b7280;width:14px}
+.hc-sidebar-selected{padding:10px 16px 10px 40px;border-left:4px solid #6b7280;background:#f3f4f6;color:#111827;font-size:13px;font-weight:600}
+.hc-tips-content{display:flex;flex:1;flex-direction:column;min-width:0;min-height:0;background:#f9fafb}
+.hc-content-header{background:white;padding:20px 24px;border-bottom:2px solid #e5e7eb;flex-shrink:0}
+.hc-content-header h2{margin:0;font-size:22px;font-weight:700;line-height:1.3}
+.hc-content-scroll{flex:1;min-height:0;overflow:auto;padding:24px}
+.hc-step-section{background:white;border-radius:8px;padding:16px;margin-bottom:16px;box-shadow:0 1px 3px #0000000d;border:1px solid #e5e7eb}
+.hc-tips-footer,.hc-whats-footer{border-top:1px solid #e5e7eb;background:white;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;color:#374151;font-size:13px;flex-shrink:0}
+.hc-tips-footer label,.hc-whats-footer label{display:flex;align-items:center;gap:8px}
+.hc-nav-buttons{display:flex;gap:6px}.hc-nav-buttons span{padding:6px 9px;border:1px solid #e5e7eb;border-radius:5px;color:#374151}
+.hc-whats-container{display:flex;flex:1;flex-direction:column;min-height:0;background:#f9fafb}
+.hc-whats-scroll{flex:1;overflow:auto;padding:24px;min-height:0}.hc-whats-inner{max-width:800px;margin:0 auto}
+.hc-whats-header{margin:0 0 24px}.hc-whats-header h2{font-size:24px;font-weight:700;margin:0 0 6px;color:#111827}.hc-whats-header p{font-size:13px;color:#6b7280;margin:0}
+.hc-release-card{background:#fff;border:1px solid #9f9fa1;border-radius:8px;padding:16px;box-shadow:0 1px 3px #0000000d}
+.hc-version-pill{display:inline-block;background:#6b7280;color:#fff;border-radius:16px;padding:3px 10px;font-size:11px;font-weight:600;margin-bottom:6px}
+.hc-release-date{color:#9ca3af;font-size:12px;margin-bottom:8px}.hc-release-card h3{font-size:16px;font-weight:600;color:#1f2937;margin:0 0 8px}
+.hc-release-description{padding:8px;border-radius:6px;background:#f9fafb;font-size:14px;line-height:1.65}
+.hc-quill-content{color:#111827;font-size:14px;line-height:1.5;overflow-wrap:anywhere;min-height:48px}
+.hc-quill-content p{margin:0}.hc-quill-content h1,.hc-quill-content h2,.hc-quill-content h3{margin:0;font-weight:700}
+.hc-quill-content ol,.hc-quill-content ul{padding-left:1.5em;margin:0}.hc-quill-content li{margin:0}
+.hc-quill-content img{display:block;max-width:100%;max-height:400px;object-fit:contain;margin:12px auto;padding:8px;border:1px solid #b9b9b9;background:#f9fafb;border-radius:6px}
+.hc-quill-content .ql-align-center{text-align:center}.hc-quill-content .ql-align-right{text-align:right}.hc-quill-content .ql-align-justify{text-align:justify}
+@media(max-width:780px){.hc-tips-sidebar{width:170px}.hc-tab-navigation>span{padding:12px 10px;font-size:12px}.hc-content-scroll{padding:12px}.hc-content-header{padding:14px}.hc-whats-scroll{padding:14px}}
+
+/* Original BPAL editor formatting options and media */
+.language-panel .ql-toolbar .ql-picker.ql-font{width:130px}
+.language-panel .ql-toolbar .ql-picker.ql-size{width:82px}
+.ql-snow .ql-picker.ql-size .ql-picker-label:before,
+.ql-snow .ql-picker.ql-size .ql-picker-item:before{content:attr(data-value)}
+.ql-snow .ql-picker.ql-font .ql-picker-label:before,
+.ql-snow .ql-picker.ql-font .ql-picker-item:before{content:attr(data-value)}
+.language-panel .ql-toolbar .ql-picker-options{max-height:250px;overflow-y:auto}
+.hc-quill-content img{max-width:100%;height:auto}
+.hc-quill-content [style*="line-height"]{white-space:normal}
+
+/* Structured Tips & Tricks editor, modeled on the original administrator application. */
+.structured-steps{display:flex;flex-direction:column;gap:15px;margin-top:15px;min-width:0}
+.structured-steps-head,.structured-step-top,.structured-step-actions{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.structured-step{border:1px solid #dae1eb;border-radius:12px;background:#fff;padding:15px;min-width:0}
+.structured-step-top{margin-bottom:12px}
+.structured-step-actions button{min-width:33px;padding:6px 9px;justify-content:center}
+.structured-step-image{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:0 0 14px}
+.structured-step-image img{display:block;max-width:100%;max-height:360px;object-fit:contain;border:1px solid #d9e0e7;border-radius:8px;background:#f8fafc}
+.step-file-action{display:inline-flex!important;flex-direction:row!important;align-items:center;gap:8px;border:1px solid #cbd6e4;border-radius:8px;padding:8px 12px;cursor:pointer;font-size:14px}
+.step-file-action input{display:none}
+.structured-step .ql-toolbar{white-space:normal}
+.structured-step .ql-container{min-height:140px;font-size:14px}
+.hc-instruction-step{padding:16px 0;border-bottom:1px solid #edf0f3}
+.hc-instruction-step:last-child{border-bottom:0}
+.hc-instruction-image{max-width:100%;max-height:460px;object-fit:contain;display:block;margin:0 auto 18px;border-radius:6px}
+@media(max-width:900px){.workspace-editors{grid-template-columns:1fr!important}}
+
+/* Native Quill toolbar spacing dropdown (no additional editor header). */
+.paragraph-editor{min-width:0;max-width:100%;position:relative;display:block}
+.paragraph-editor .quill{min-width:0;max-width:100%}
+.paragraph-editor .ql-toolbar.ql-snow{position:relative;display:flex;flex-wrap:wrap;gap:4px 2px;align-items:center;border-radius:8px 8px 0 0;overflow:visible}
+.paragraph-editor .ql-toolbar .ql-formats{margin-right:7px;display:inline-flex;align-items:center;flex-wrap:nowrap}
+.paragraph-editor .ql-toolbar .ql-picker.ql-font{width:118px}
+.paragraph-editor .ql-toolbar .ql-picker.ql-size{width:78px}
+.paragraph-editor .ql-toolbar .ql-picker-options{z-index:8;max-height:220px;overflow-y:auto}
+.paragraph-editor .ql-container.ql-snow{min-width:0;max-width:100%}
+.paragraph-editor .ql-editor{min-width:0;overflow-wrap:anywhere}
+/* Quill generates this button from the paragraphspacing toolbar format. */
+.paragraph-editor .ql-toolbar.ql-snow button.ql-paragraphspacing{width:auto;min-width:96px;height:26px;padding:3px 8px;border:1px solid #d3deed;border-radius:5px;background:#fff;color:#354a68;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.paragraph-editor .ql-toolbar.ql-snow button.ql-paragraphspacing::before{content:'\2195';font-size:16px;line-height:1}
+.paragraph-editor .ql-toolbar.ql-snow button.ql-paragraphspacing::after{content:'Spacing \25be';font-size:12px;font-weight:600;line-height:1}
+.paragraph-editor[data-editor-language="fr"] .ql-toolbar.ql-snow button.ql-paragraphspacing::after{content:'Espacement \25be'}
+.paragraph-editor .ql-toolbar.ql-snow button.ql-paragraphspacing:hover,.paragraph-editor .ql-toolbar.ql-snow button.ql-paragraphspacing:focus-visible{border-color:#7e9bd0;background:#eff5ff;outline:none}
+/* Portal target is the actual Quill toolbar; floating panel is anchored to its lower edge. */
+.paragraph-editor .ql-toolbar .paragraph-spacing-panel{position:absolute;z-index:120;top:calc(100% + 5px);right:8px;width:min(330px,calc(100% - 16px));display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;padding:14px;border:1px solid #bdcce0;border-radius:10px;background:#fff;box-shadow:0 12px 30px #1d2d4f2e;white-space:normal;color:#27384f}
+.paragraph-editor .paragraph-panel-heading{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:8px;padding-bottom:7px;border-bottom:1px solid #e8edf5}
+.paragraph-editor .paragraph-panel-heading strong{font-size:13px;font-weight:700}
+.paragraph-editor .ql-toolbar.ql-snow button.paragraph-panel-close{width:26px;height:26px;min-width:26px;min-height:26px;border-radius:5px;padding:0;display:grid;place-items:center;background:transparent;color:#50617a;font-size:17px;font-weight:400}
+.paragraph-editor .paragraph-spacing-panel label{display:flex;flex-direction:column;align-items:stretch;gap:5px;min-width:0;margin:0;font-size:12px;line-height:1.3;color:#42536b;font-weight:600}
+.paragraph-editor .paragraph-spacing-panel .paragraph-full-row{grid-column:1/-1}
+.paragraph-editor .paragraph-spacing-panel input,.paragraph-editor .paragraph-spacing-panel select{box-sizing:border-box;width:100%;min-width:0;height:35px;padding:6px 8px;border:1px solid #d4dfec;border-radius:6px;background:#fff;color:#202938;font-size:13px;font-weight:400;line-height:normal}
+.paragraph-editor .paragraph-error{grid-column:1/-1;color:#b42318;font-size:12px;margin:0}
+.paragraph-editor .paragraph-panel-actions{grid-column:1/-1;display:flex;justify-content:space-between;gap:10px;padding-top:2px}
+.paragraph-editor .ql-toolbar.ql-snow button.paragraph-reset,.paragraph-editor .ql-toolbar.ql-snow button.paragraph-apply{width:auto;height:32px;padding:6px 13px;border-radius:6px;font-size:12px;font-weight:650}
+.paragraph-editor .ql-toolbar.ql-snow button.paragraph-reset{background:#fff;border:1px solid #cfd9e7;color:#445670}
+.paragraph-editor .ql-toolbar.ql-snow button.paragraph-apply{background:#2459d3;border:1px solid #2459d3;color:white}
+.docs-scope-warning{display:flex;align-items:center;gap:8px;padding:10px 12px;margin:14px 0 0;
+  border:1px solid #ead6a9;border-radius:8px;background:#fffaf1;color:#76571e;font-size:12px}
+.docs-card .item-actions{flex-wrap:wrap}
+.docs-card .docs-list-head>div,.docs-card-head>div:last-child{min-width:0}
+.main,.main .item-main{min-width:0}
+@media(max-width:900px){.workspace-editors{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:640px){.workspace-actions,.workspace-heading,.header-actions,.docs-actions{flex-wrap:wrap}
+  .shell>.main{width:100%}.item-actions{flex-wrap:wrap}.docs-card{overflow-wrap:anywhere}}
+
+/* Shared rich-text layout: each paragraph has independent top and bottom margins.
+   Grid prevents vertical margin collapsing, including for negative Before/After.
+   Applied identically to the CMS editor and the client-side appearance preview. */
+.paragraph-editor .ql-editor,
+.hc-quill-content{display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:max-content;align-content:start;row-gap:0;line-height:1.5;font-size:14px}
+.paragraph-editor .ql-editor>*,.hc-quill-content>*{min-width:0}
+.paragraph-editor .ql-editor ol,.paragraph-editor .ql-editor ul,
+.hc-quill-content ol,.hc-quill-content ul{display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:max-content;row-gap:0}
+/* Word-like spacing panel: Before and After can use negative em/px. */
+.paragraph-editor .paragraph-spacing-panel .paragraph-length-input{display:flex;align-items:center;gap:5px;min-width:0}
+.paragraph-editor .paragraph-spacing-panel .paragraph-length-input input{flex:1 1 0;width:0;min-width:0}
+.paragraph-editor .paragraph-spacing-panel .paragraph-length-input select{flex:0 0 62px;width:62px;padding-left:6px;padding-right:4px}
+.paragraph-editor .paragraph-spacing-help{grid-column:1/-1;margin:0;font-size:11px;line-height:1.4;color:#617084}

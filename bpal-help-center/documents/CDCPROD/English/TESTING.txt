@@ -1,0 +1,1319 @@
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ODBC Methodology Event Tracking & Alert System: The Data Storage Phase 
+
+Version 2.0 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+​​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​ 
+
+​​ 
+
+CHAPTER 1 – INTRODUCTION  
+
+1.1 Overview 
+
+The Event Tracking System (Phase 1) is a comprehensive database-driven solution designed to capture and store system events across the entire BPAL application and services. Built with scalability and flexibility in mind, this system provides a centralized repository for all application events, establishing the foundation for future notification capabilities. 
+
+ 
+
+“Note: This document covers Phase 1 (Data Storage). Phase 2 (Real-Time Notification System) will be planned separately once the data layer is stable.” 
+
+1.2 Purpose 
+
+In modern distributed systems, tracking events across multiple applications, services, and platforms presents significant challenges. Phase 1 addresses these challenges by providing: 
+
+ 
+
+Capability 
+
+Description 
+
+Centralized Event Logging 
+
+A single source of truth for all system events across BPAL 
+
+Comprehensive Audit Trail 
+
+Complete history of all events with timestamps and context 
+
+Flexible Event Data Storage 
+
+Support for structured and unstructured event data 
+
+Event Classification 
+
+Categorization framework for different event types and priorities 
+
+Multi-Language Support 
+
+Bilingual descriptions (English/French) 
+
+User Event Subscription 
+
+Users can subscribe to specific event configurations with per-user notification preferences and data filters 
+
+Notification Signaling 
+
+Lightweight kick records enable immediate notification service activation when events are logged, without impacting event insertion performance 
+
+ 
+
+Out of Scope for Phase 1:  
+
+Real-time notification delivery 
+
+Email/SMS integration 
+
+Notification queue processing 
+
+ 
+
+1.3 Key Features 
+
+1.3.1 Event Classification 
+
+The system categorizes events into multiple classifications: 
+
+ 
+
+REALTIME: Events requiring immediate notification 
+
+NON_REALTIME: Events stored for historical reference without notifications 
+
+CRITICAL/ERROR: High-priority events with immediate alerting 
+
+INFO/WARNING: Informational events for monitoring 
+
+STARTUP_EVENT/SHUTDOWN_EVENT: System lifecycle events 
+
+1.3.2 Flexible Event Data Storage 
+
+Events utilize a hybrid storage approach: 
+
+Structured fields for common attributes (date, time, user, program, etc.) 
+
+JSON-based DBEVT_DATA field for event-specific information 
+
+Supports unlimited custom fields without schema changes 
+
+ 
+
+1.3.3 Multi-Language Support 
+
+The system supports bilingual descriptions and messages: 
+
+English (_E suffix) and French (_F suffix) variants for all descriptive fields 
+
+Configurable message templates for different locales 
+
+ 
+
+1.3.4 User Event Subscription 
+
+Users can subscribe to specific event types and choose to be notified when those events occur 
+
+Each subscription supports notification preferences including preferred delivery method 
+
+Optional filter criteria allow users to narrow notifications to only events matching specific conditions in the event data 
+
+Subscriptions can be enabled or disabled independently without removing the configuration 
+
+ 
+
+1.3.5 Notification Signaling 
+
+When an event is logged, a lightweight kick record is created to signal the background Notification Service 
+
+The kick mechanism uses Inter-Process Communication (IPC) to wake the service immediately without polling 
+
+Kick records track processing status (Pending, Complete, Failed) for reliability 
+
+Event classification is stored in the kick record to enable priority-based processing by the Notification Service (REALTIME/CRITICAL/ERROR processed first) 
+
+ 
+
+ 
+
+CHAPTER 2 – SYSTEM DESIGN AND ARCHITECTURE EVOLUTION 
+
+ 
+
+2.1 Design Philosophy 
+
+The Event Tracking System was designed with a simple principle: Start simple, scale smartly. Rather than building a complex system upfront, we began with basic event logging and gradually added sophistication based on real-world needs. 
+
+2.2 The Core Design – Understanding the Foundation 
+
+Before diving into how we got here, let's look at the current core design that evolved from our iterations: 
+
+2.2.1 The Six-Table Architecture 
+
+EVENT_TRACKING (Main Event Storage) 
+
+  v [Links via DBEVT_CONFIG_ID] 
+
+EVENT_TRACKING_CONFIG_DETAIL (Program Configuration) 
+
+  v [Links via category_id and type_id] 
+
+EVENT_LOG_CATEGORY & EVENT_LOG_TYPE (Reference Data) 
+
+  v [All joined in] 
+
+USER_EVENT_TRACKING (User Subscriptions) 
+
+  v [Filtered by user subscriptions] 
+
+EVENT_TRACKING_KICK (Notification Signal) 
+
+  v [Links via event_id to EVENT_TRACKING] 
+
+USER_EVENTS_VIEW (Unified View)   
+
+Note: Our system is built on six interconnected tables that work together.  
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+2.3 Evolution Stage 1: The Beginning 
+
+2.3.1 Initial Challenge 
+
+We need to track what's happening in our systems. 
+
+2.3.2 First Design – Single Table Approach 
+
+We started with everything in one table 
+
+EVENT_TRACKING { 
+
+    DBEVT_UNIQUE_ID 
+
+    DBEVT_DATE 
+
+    DBEVT_TIME 
+
+    DBEVT_PROGRAM         -- Hard-coded program name 
+
+    DBEVT_CATEGORY        -- Hard-coded like 'REPORT', 'SAMPLE', 'SCALE' 
+
+    DBEVT_TYPE            -- Hard-coded like 'AUDITRP', 'SAMPLE', 'TSGUI-Truck Scale GUI' 
+
+    DBEVT_DATA            -- JSON for flexibility 
+
+} 
+
+ 
+
+Problems emerged quickly: 
+
+Same category spelled differently: 'Report', 'REPORT', 'report' 
+
+No standard types across programs 
+
+No way to know which programs were configured 
+
+2.4 Evolution Stage 2: Introducing Reference Tables 
+
+2.4.1 The Standardization 
+
+We needed standardization. This led to our first major refactoring: 
+
+EVENT_TRACKING_CATEGORY { 
+
+    DBEVT_CATEGORY_ID       -- Now using IDs! 
+
+    DBEVT_CATEGORY_NAME     -- 'REPORT', 'SAMPLE', 'SCALE' 
+
+    DBEVT_CATEGORY_DESC_F/E -- Bilingual support added 
+
+} 
+
+EVENT_TRACKING_TYPE { 
+
+    DBEVT_TYPE_ID 
+
+    DBEVT_TYPE_NAME         -- 'AUDITRP', 'SAMPLE', 'TSGUI' 
+
+    DBEVT_TYPE_DESC_F/E 
+
+} 
+
+But we still had a problem: How do we link events to these references without changing existing applications? 
+
+2.5 Evolution Stage 3: The Configuration Layer 
+
+2.5.1 The Breakthrough – Configuration Table 
+
+This is when we introduced EVENT_TRACKING_CONFIG_DETAIL: 
+
+EVENT_TRACKING_CONFIG_DETAIL { 
+
+    dbevt_config_id            -- Unique config identifier 
+
+    dbevt_program              -- Which program? 
+
+    dbevt_category_id          -- Links to EVENT_LOG_CATEGORY 
+
+    dbevt_type_id              -- Links to EVENT_LOG_TYPE 
+
+    dbevt_event_classification -- REALTIME, NON_REALTIME, etc. 
+
+} 
+
+2.5.2 The Clever Connection 
+
+Instead of changing EVENT_TRACKING structure dramatically, we: 
+
+Added just one field: DBEVT_CONFIG_ID 
+
+Applications pass config_id instead of category/type 
+
+The config table handles all the mappings 
+
+EVENT_TRACKING { 
+
+    ... 
+
+    DBEVT_CONFIG_ID     -- This one field links to everything! 
+
+    ... 
+
+} 
+
+2.6 Evolution Stage 4: The Unified View 
+
+We need to join 5 tables just to see event details! So, we created a view that does all the joining: 
+
+USER_EVENTS_VIEW 
+
+  - All EVENT_TRACKING fields (date, time, user, data, etc.) 
+
+  - Program details from CONFIG_DETAIL (program, computer, classification) 
+
+  - Category name and descriptions (English/French) 
+
+  - Type name and descriptions (English/French) 
+
+  - Filtered by USER_EVENT_TRACKING subscriptions 
+
+“Note: The final fields in the tables are shown in the class diagram below in 2.8” 
+
+2.7 Design Patterns in Our Architecture 
+
+2.7.1 Reference Data Pattern 
+
+EVENT_LOG_CATEGORY and EVENT_LOG_TYPE are classic reference tables 
+
+Provide controlled vocabulary 
+
+Support multiple languages 
+
+ 
+
+2.7.2 Configuration Pattern 
+
+EVENT_TRACKING_CONFIG_DETAIL centralizes program behavior 
+
+One place to control how events are classified 
+
+Determines real-time vs. non-real-time handling 
+
+ 
+
+2.7.3 Facade Pattern 
+
+USER_EVENTS_VIEW acts as a facade 
+
+Hides complexity of joins between event, configuration, reference, and subscription tables 
+
+Provides simple interface for user-specific event queries 
+
+ 
+
+2.7.4 Signal Pattern 
+
+EVENT_TRACKING_KICK acts as a lightweight notification trigger 
+
+Decouples event storage from notification processing 
+
+DLL inserts a kick record and signals the service via IPC, keeping event insertion fast 
+
+Notification Service processes kick records asynchronously 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+2.8 Overall Class Diagram  
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+2.8.1. EVENT_TRACKING (Main Transaction Table) 
+
+Purpose: Stores individual event occurrences with minimal data by referencing configuration details through config_id. This is the primary transactional table that records each event execution. 
+
+Design Philosophy: Keep the transaction table lean by storing only event-specific runtime data. Static configuration data is referenced via foreign key to avoid redundancy. 
+
+Fields Description: 
+
+Field Name 
+
+Data Type 
+
+Constraint 
+
+Description 
+
+DBEVT_UNIQUE_ID 
+
+INT 
+
+PRIMARY KEY 
+
+Unique identifier for each event record. Auto-incremented sequence number that uniquely identifies every event logged in the system. 
+
+DBEVT_DATE 
+
+DATE 
+
+NOT NULL 
+
+The date when the event occurred (YYYY-MM-DD). Used for temporal querying, reporting, and event chronology. Essential for audit trails and compliance. 
+
+DBEVT_TIME 
+
+TIME 
+
+NOT NULL 
+
+The time when the event occurred (HH:MM:SS). Provides precise timing information for the event. Combined with DBEVT_DATE gives complete timestamp. 
+
+DBEVT_SEQUENCE_NUM 
+
+INT 
+
+ 
+
+Sequence number for ordering events that occur at the same date/time. Useful for maintaining execution order of rapid-fire events or when multiple events happen in the same second. 
+
+DBEVT_DATA 
+
+JSON 
+
+ 
+
+Flexible field to store additional event-specific data in JSON format. Can contain custom attributes, error details, performance metrics, or any structured data relevant to the specific event. Provides extensibility without schema changes. 
+
+DBEVT_USER_ID 
+
+VARCHAR(12) 
+
+ 
+
+User identifier who triggered or is associated with the event. Used for user activity tracking, security auditing, and accountability. Can be a username, employee ID, or system account. 
+
+DBEVT_CONFIG_ID 
+
+VARCHAR(140) 
+
+FOREIGN KEY 
+
+Reference to EVENT_TRACKING_CONFIG_DETAIL table. This is the key field that enables data normalization - links to all static configuration information about the program/event type. 
+
+ 
+
+2.8.2. EVENT_TRACKING_CONFIG_DETAIL (Configuration Master Table) 
+
+Purpose: Stores reusable program configurations. Acts as a master reference table that contains all static information about programs, their classifications, and logging settings. Each unique program configuration gets one record. 
+
+Design Philosophy: Centralize all program metadata in one place. When the same program executes multiple times, EVENT_TRACKING only stores the config_id reference, not the full program details. 
+
+Fields Description: 
+
+Field Name 
+
+Data Type 
+
+Constraint 
+
+Description 
+
+DBEVT_CONFIG_ID 
+
+INT 
+
+PRIMARY KEY 
+
+Unique identifier for each program configuration. Returned by the DLL function and used as foreign key in EVENT_TRACKING table. 
+
+DBEVT_CATEGORY_ID 
+
+INT 
+
+FOREIGN KEY 
+
+Reference to EVENT_TRACKING_CATEGORY table. Links this configuration to a predefined category (e.g., "Batch Process", "User Interface", "API Call"). 
+
+DBEVT_TYPE_ID 
+
+INT 
+
+FOREIGN KEY 
+
+Reference to EVENT_TRACKING_TYPE table. Links this configuration to a predefined type (e.g., "Start", "End", "Error", "Warning"). 
+
+DBEVT_DESC_E 
+
+VARCHAR(64) 
+
+ 
+
+Event description in English. Used in notification messages and UI display. 
+
+DBEVT_DESC_F 
+
+VARCHAR(64) 
+
+ 
+
+Event description in French. Used in notification messages and UI display. 
+
+DBEVT_CREATED_DT 
+
+TIMESTAMP 
+
+DEFAULT CURRENT_TIMESTAMP 
+
+Timestamp when this configuration record was first created. Useful for auditing when new programs were added to the tracking system. 
+
+DBEVT_UPDATED_AT 
+
+TIMESTAMP 
+
+DEFAULT CURRENT_TIMESTAMP 
+
+Timestamp of the last update to this configuration. Automatically updated when any field changes. Tracks configuration maintenance history. 
+
+DBEVT_COMPUTER 
+
+VARCHAR(64) 
+
+ 
+
+Computer or server name where this program typically runs. Can be hostname, IP address, or server identifier. Useful for environment-specific configurations. 
+
+DBEVT_PROGRAM 
+
+VARCHAR(100) 
+
+NOT NULL 
+
+Name of the program or executable. This could be a filename (e.g., "backup.exe"). Core identifier for the configuration. 
+
+DBEVT_COMMAND_LINE_PARAMETERS 
+
+VARCHAR(128) 
+
+ 
+
+Default or typical command line parameters used when executing the program. Different parameter combinations can create different config_ids for the same program. 
+
+DBEVT_EVENT_CLASSIFICATION 
+
+VARCHAR(20) 
+
+ 
+
+High-level classification of the event (e.g., "real-time", "system", "Security"). Provides additional categorization beyond category_id and type_id. 
+
+DBEVT_PROGRAM_DESC_F 
+
+VARCHAR(64) 
+
+ 
+
+Program description in french language (likely French language - based on suffix '_f).  
+
+DBEVT_PROGRAM_DESC_E 
+
+VARCHAR(64) 
+
+ 
+
+Program description in english language (likely English - based on suffix '_e').  
+
+DBEVT_LOGGING_ENABLED 
+
+CHAR(1) 
+
+DEFAULT 'Y', CHECK ('Y','N') 
+
+Critical field: Controls whether events for this configuration should be logged. 'Y' = logging enabled, 'N' = logging disabled. Allows dynamic control of logging without code changes. Used by DLL to inform application whether to create EVENT_TRACKING records. 
+
+ 
+
+Business Rules: 
+
+Each unique combination of program + parameters + computer should have only one config_id 
+
+Changing dbevt_logging_enabled should update updated_at timestamp 
+
+Deleting a config should be soft delete or restricted if EVENT_TRACKING records exist 
+
+ 
+
+2.8.3. EVENT_TRACKING_CATEGORY (Reference/Lookup Table) 
+
+Purpose: Defines standardized event categories. This is a reference table that provides controlled vocabulary for categorizing events. Ensures consistency across the system. 
+
+Design Philosophy: Master data table. Small, relatively static list of categories that classify the nature or domain of events. 
+
+Fields Description: 
+
+Field Name 
+
+Data Type 
+
+Constraint 
+
+Description 
+
+DBEVT_CATEGORY_ID 
+
+INT 
+
+PRIMARY KEY 
+
+Unique identifier for each category. Used as foreign key in EVENT_TRACKING_CONFIG_DETAIL. 
+
+DBEVT_CATEGORY_NAME 
+
+VARCHAR(20) 
+
+UNIQUE, NOT NULL 
+
+Short, unique name for the category. Examples: "REPORT","SCALE". This is the display/reference name used throughout the system. 
+
+DBEVT_CATEGORY_DESC_F 
+
+VARCHAR(64) 
+
+ 
+
+Detailed description of the category in one language (likely French - based on suffix '_F'). Provides full explanation of what types of events belong to this category. 
+
+DBEVT_CATEGORY_DESC_E 
+
+VARCHAR(64) 
+
+ 
+
+Detailed description of the category in English (based on suffix '_E').  
+
+ 
+
+Business Rules: 
+
+Categories should be pre-populated during system setup 
+
+Adding new categories should be an administrative function 
+
+Categories should not be deleted if referenced by existing configurations 
+
+ 
+
+2.8.4. EVENT_TRACKING_TYPE (Reference/Lookup Table) 
+
+Purpose: Defines standardized event types. This reference table provides controlled vocabulary for the type or lifecycle stage of events. Complements categories by describing what happened. 
+
+Design Philosophy: Master data table. Small, relatively static list of types that describe the event lifecycle or outcome. 
+
+Fields Description: 
+
+Field Name 
+
+Data Type 
+
+Constraint 
+
+Description 
+
+DBEVT_TYPE_ID 
+
+INT 
+
+PRIMARY KEY 
+
+Unique identifier for each type. Used as foreign key in EVENT_TRACKING_CONFIG_DETAIL. 
+
+DBEVT_TYPE_NAME 
+
+VARCHAR(20) 
+
+UNIQUE, NOT NULL 
+
+Short, unique name for the type. Examples: "ADUITRP","SAMPLE". This is the display/reference name used throughout the system. 
+
+DBEVT_TYPE_DESC_F 
+
+VARCHAR(64) 
+
+ 
+
+Detailed description of the type in one language (likely French - based on suffix '_F').  
+
+DBEVT_TYPE_DESC_E 
+
+VARCHAR(64) 
+
+ 
+
+Detailed description of the type in English (based on suffix '_E').  
+
+ 
+
+Business Rules: 
+
+Types should be pre-populated during system setup 
+
+Adding new types should be an administrative function 
+
+Types should not be deleted if referenced by existing configurations 
+
+ 
+
+2.8.5. USER_EVENTS_VIEW (View) 
+
+Purpose: Provides a denormalized, user-friendly view of all event tracking data filtered by user subscriptions. Joins five tables (since the sixth table, EVENT_TRACKING_KICK, is not part of the view) to present complete event information for a specific user without requiring complex joins. 
+
+Design Philosophy: Simplify data access for user-specific event viewing and reporting. Each user sees only the events they have subscribed to. Hides the normalized structure complexity from end users and reporting tools. 
+
+ 
+
+Fields Description: 
+
+From EVENT_TRACKING: 
+
+Field Name 
+
+Data Type 
+
+Description 
+
+DBEVT_UNIQUE_ID 
+
+INT 
+
+Unique event identifier 
+
+DBEVT_DATE 
+
+DATE 
+
+Event occurrence date 
+
+DBEVT_TIME 
+
+TIME 
+
+Event occurrence time 
+
+DBEVT_COMPUTER 
+
+VARCHAR(64) 
+
+Computer where event originated (joined from config) 
+
+DBEVT_USER_ID 
+
+VARCHAR(12) 
+
+User associated with the event 
+
+DBEVT_CONFIG_ID 
+
+VARCHAR(140) 
+
+Configuration reference ID 
+
+DBEVT_SEQUENCE_NUM 
+
+INT 
+
+Sequence number for ordering 
+
+DBEVT_COMMAND_LINE_PARAMETERS 
+
+VARCHAR(128) 
+
+Runtime parameters used 
+
+DBEVT_DATA 
+
+JSON 
+
+Additional event data in JSON format 
+
+From EVENT_TRACKING_CONFIG_DETAIL: 
+
+Field Name 
+
+Data Type 
+
+Description 
+
+DBEVT_PROGRAM 
+
+VARCHAR(100) 
+
+Program name 
+
+DBEVT_EVENT_CLASSIFICATION 
+
+VARCHAR(20) 
+
+Event classification 
+
+DBEVT_PROGRAM_DESC_F 
+
+VARCHAR(64) 
+
+Program description (French language) 
+
+DBEVT_PROGRAM_DESC_E 
+
+VARCHAR(64) 
+
+Program description (English) 
+
+DBEVT_DESC_E 
+
+VARCHAR(64) 
+
+Event description (English) 
+
+DBEVT_DESC_F 
+
+VARCHAR(64) 
+
+Event description (French) 
+
+DBEVT_LOGGING_ENABLED 
+
+CHAR(1) 
+
+Current logging status for this configuration 
+
+From EVENT_TRACKING_CATEGORY: 
+
+Field Name 
+
+Data Type 
+
+Description 
+
+DBEVT_CATEGORY_NAME 
+
+VARCHAR(20) 
+
+Category name 
+
+DBEVT_CATEGORY_DESC_F 
+
+VARCHAR(64) 
+
+Category description (French) 
+
+DBEVT_CATEGORY_DESC_E 
+
+VARCHAR(64) 
+
+Category description (English) 
+
+ 
+
+ 
+
+ 
+
+From EVENT_TRACKING_TYPE: 
+
+Field Name 
+
+Data Type 
+
+Description 
+
+DBEVT_TYPE_NAME 
+
+VARCHAR(20) 
+
+Type name 
+
+DBEVT_TYPE_DESC_F 
+
+VARCHAR(64) 
+
+Type description (French) 
+
+DBEVT_TYPE_DESC_E 
+
+VARCHAR(64) 
+
+Type description (English) 
+
+From USER_EVENT_TRACKING: 
+
+Field Name 
+
+Data Type 
+
+Description 
+
+DBUET_USER_ID 
+
+VARCHAR(12) 
+
+Subscribed user identifier 
+
+DBUET_NOTIFY 
+
+CHAR(1) 
+
+Whether notifications are enabled for this subscription 
+
+DBUET_STATUS 
+
+CHAR(1) 
+
+Subscription status (Active/Inactive) 
+
+2.8.6. USER_EVENT_TRACKING (User Subscription Table) 
+
+Purpose: Stores per-user subscriptions linking users to specific event configurations with notification preferences and optional filter criteria. 
+
+Design Philosophy: Allow individual users to control which events they want to monitor and be notified about. Each subscription can be independently enabled or disabled without removing the configuration. 
+
+Fields Description: 
+
+Field Name 
+
+Data Type 
+
+Constraint 
+
+Description 
+
+DBUET_UNIQUE_ID 
+
+INT 
+
+PRIMARY KEY 
+
+Unique identifier for each subscription record. Auto-incremented. 
+
+DBUET_USER_ID 
+
+VARCHAR(12) 
+
+NOT NULL 
+
+User who owns this subscription. Links to USER_MASTER. 
+
+DBUET_CONFIG_ID 
+
+VARCHAR(10) 
+
+FOREIGN KEY 
+
+Reference to EVENT_TRACKING_CONFIG_DETAIL. Identifies which event configuration this subscription monitors. 
+
+DBUET_NOTIFY 
+
+CHAR(1) 
+
+Whether notifications are enabled. 'Y' = notify, 'N' = do not notify. 
+
+DBUET_PREFERRED_METHOD 
+
+VARCHAR(5) 
+
+Preferred notification delivery method. Values: 'EMAIL', 'SMS', 'BOTH'. 
+
+DBUET_STATUS 
+
+CHAR(1) 
+
+Subscription status. 'A' = Active, 'I' = Inactive. 
+
+DBUET_FILTER_JSON 
+
+VARCHAR(2000) 
+
+Optional filter criteria stored as a JSON array. Each element contains an operator and value applied against DBEVT_DATA when evaluating notifications. Supports up to 5 filter rows. 
+
+Business Rules: 
+
+Each user can have multiple subscriptions to different event configurations 
+
+A user should have only one subscription per config_id 
+
+Filters are always stored with English operator names regardless of UI language 
+
+Inactive subscriptions are retained for re-activation but are excluded from notification processing 
+
+
+2.8.7. EVENT_TRACKING_KICK (Notification Signal Table) 
+
+Purpose: Stores lightweight signal records that notify the background Notification Service when new events require notification processing. Each record links to a specific event in EVENT_TRACKING and tracks whether the service has processed it. 
+
+Design Philosophy: Keep event insertion fast by separating the notification signal from notification processing. The DLL inserts a minimal kick record immediately after logging an event, then signals the service via IPC. The service processes kick records asynchronously, avoiding any performance impact on the calling application. 
+
+Fields Description: 
+
+Field Name 
+
+Data Type 
+
+Constraint 
+
+Description 
+
+DBETK_UNIQUE_ID 
+
+INT 
+
+PRIMARY KEY 
+
+Unique identifier for each kick record. Auto-incremented. 
+
+DBETK_EVENT_ID 
+
+INT 
+
+FOREIGN KEY 
+
+Reference to EVENT_TRACKING (DBEVT_UNIQUE_ID). Links this kick record to the specific event that needs notification processing. 
+
+DBETK_STATUS 
+
+CHAR(1) 
+
+DEFAULT 'P' 
+
+Processing status. 'P' = Pending (awaiting service), 'C' = Complete (processed), 'F' = Failed (error occurred). 
+
+DBETK_CREATED_DT 
+
+DATETIME 
+
+DEFAULT GETDATE() 
+
+Timestamp when the kick record was created. Set automatically at insert time. 
+
+DBETK_PROCESSED_DT 
+
+DATETIME 
+
+NULL 
+
+Timestamp when the Notification Service finished processing this record. NULL until processed. 
+
+DBETK_PRIORITY 
+
+INT 
+
+DEFAULT 5 
+
+Processing priority set by the DLL based on event classification from EVENT_TRACKING_CONFIG_DETAIL at insert time. Lower values are processed first by the Notification Service. Values: 1=REALTIME, 2=CRITICAL, 3=ERROR, 4=WARNING, 5=INFO, 6=NON_REALTIME, 7=STARTUP_EVENT, 8=SHUTDOWN_EVENT. New priority levels can be added without changes to the Notification Service. 
+
+Business Rules: 
+
+One kick record is created per event insert when logging is enabled, regardless of classification. The Notification Service uses the DBETK_PRIORITY to prioritize processing order. 
+
+The DLL inserts the kick record immediately after the EVENT_TRACKING insert succeeds 
+
+The Notification Service updates status from 'P' to 'C' or 'F' after processing 
+
+Completed kick records can be periodically purged for housekeeping 
+
+If the service is down, kick records accumulate with status 'P' and are processed when the service restarts 
+
+
+CHAPTER 3 – HOW WE STORE THE DATA 
+
+Our event tracking system uses a normalized database design with a configuration-based reference system. The key innovation is separating static program configuration from dynamic event data, combined with centralized logging control through a DLL interface. User subscriptions allow individual users to define which events they want to see and be notified about. 
+
+The Core Concept: 
+
+Three reference tables are pre-populated with master data: 
+
+EVENT_TRACKING_CATEGORY: Defines event categories (e.g., "REPORT", "SCALE") 
+
+EVENT_TRACKING_TYPE: Defines event types (e.g., "ADUITRP") 
+
+EVENT_TRACKING_CONFIG_DETAIL: Contains unique program configurations 
+
+Each program configuration is identified by a unique combination of program name and parameters, which maps to a single config_id. This config_id also stores a critical dbevt_logging_enabled flag ('Y' or 'N'). 
+
+A fourth table, USER_EVENT_TRACKING, stores per-user subscriptions linking users to specific event configurations with notification preferences and optional filter criteria. 
+
+A fifth table, EVENT_TRACKING_KICK, stores lightweight signal records that link to EVENT_TRACKING and notify the background Notification Service when new events need notification processing. 
+
+How It Works: 
+
+Step 1: Program Initialization 
+
+When a program starts, it calls a DLL function which: 
+
+Automatically identifies the computer and calling program name 
+
+Captures the command-line parameters 
+
+Looks up the matching record in EVENT_TRACKING_CONFIG_DETAIL 
+
+Returns:  
+
+config_id (unique identifier for this program configuration) 
+
+logging_enabled flag ('Y' or 'N') 
+
+Step 2: Event Logging Decision 
+
+Throughout program execution, when events occur: 
+
+The program checks the logging_enabled flag 
+
+If 'Y': Proceed to log the event 
+
+If 'N': Skip logging entirely (no database operation) 
+
+ 
+
+Step 3: Event Recording 
+
+When logging is enabled, the program:  
+
+Collects event-specific details (date, time, user, sequence, data) 
+
+Calls another DLL function to insert the event record 
+
+Stores only:  
+
+Runtime event data 
+
+The config_id reference (not the full program details) 
+
+After a successful insert, the DLL:  
+
+Inserts a kick record into EVENT_TRACKING_KICK with the event_id, priority (mapped from event classification), and status 'P' 
+
+Signals the Notification Service via IPC (Named Event) to process the new kick record 
+
+The calling application returns immediately — notification processing happens asynchronously in the background service 
+
+Every event gets a kick record. The DLL maps the event classification to a priority value in the kick record. The Notification Service processes kick records in priority order (lower values first), ensuring REALTIME and CRITICAL events are handled before INFO or NON_REALTIME events. 
+
+Step 4: Data Retrieval 
+
+To view complete event information: 
+
+Query the USER_EVENTS_VIEW 
+
+The view automatically joins EVENT_TRACKING with all reference tables and USER_EVENT_TRACKING using config_id 
+
+Returns complete event details filtered by the user's subscriptions, including program information, categories, types, and descriptions 
+
+Users only see events for configurations they have subscribed to 
+
+ 

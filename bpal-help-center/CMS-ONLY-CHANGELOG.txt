@@ -1,0 +1,6 @@
+CMS-only delivery for Tips & Tricks and What's New.
+Both tabs now ignore local CDCCOMMON JSON completely.
+Successful empty API list => empty section; failed API => empty section, no local fallback.
+Existing Assistant behavior unchanged.
+The uploaded project archive was missing registryHelper.js, retrieval.js and tokenBudget.js. Restore from the existing working project before running or packaging.
+Replace main.js in your existing project, rather than deleting your working files.

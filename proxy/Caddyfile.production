@@ -1,0 +1,35 @@
+cdcorp-bpal-api.duckdns.org {
+	@chat {
+		method POST
+		path /chat
+	}
+
+	@health {
+		method GET
+		path /health
+	}
+
+	handle @chat {
+		reverse_proxy 127.0.0.1:8000
+	}
+
+	handle @health {
+		reverse_proxy 127.0.0.1:8000
+	}
+
+	handle {
+		respond "Not Found" 404
+	}
+}
+
+http://127.0.0.1:8080 {
+	bind 127.0.0.1
+	reverse_proxy 127.0.0.1:8000
+}
+
+http://127.0.0.1:8081 {
+	bind 127.0.0.1
+	root * C:\BPALHelpServer\admin-portal\dist
+	try_files {path} /index.html
+	file_server
+}
