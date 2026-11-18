@@ -1,5 +1,6 @@
 const { app, BrowserWindow, Menu, ipcMain, dialog } = require('electron');
 const path = require('path');
+const { fileURLToPath } = require('node:url');
 const fs = require('fs');
 const RegistryHelper = require('./registryHelper');
 const OkfKnowledgeBase = require('./okfKnowledgeBase');
@@ -9,10 +10,56 @@ const { loadCmsHelpContent } = require('./cmsHelpContent');
 const { apiConfig, askApi, checkApi } = require('./apiChatClient');
 const { readCustomerApiConfig } = require('./customerApiConfig');
 const { extractLaunchQuestion } = require('./launchQuestion');
-
 // In a packaged app, .env and okf sit next to the exe in resources/
 const RESOURCE_ROOT = app.isPackaged ? process.resourcesPath : __dirname;
 require('dotenv').config({ path: path.join(RESOURCE_ROOT, '.env'), quiet: true });
+
+// Every privileged IPC operation must come from this exact local top-level document.
+// Protects against other windows, nested frames and navigated renderer pages.
+function assertTrustedSender(event) {
+  if (!mainWindow || mainWindow.isDestroyed() ||
+      event.sender !== mainWindow.webContents ||
+      !event.senderFrame ||
+      event.senderFrame !== mainWindow.webContents.mainFrame) {
+    throw new Error('Unauthorized IPC sender');
+  }
+  let pagePath;
+  try {
+    pagePath = fileURLToPath(event.senderFrame.url);
+  } catch {
+    throw new Error('Unauthorized IPC origin');
+  }
+  const expected = path.resolve(__dirname, 'index.html');
+  if (path.resolve(pagePath).toLowerCase() !== expected.toLowerCase()) {
+    throw new Error('Unauthorized IPC document');
+  }
+}
+
+function registerTrustedIpc(channel, handler) {
+  ipcMain.handle(channel, (event, ...args) => {
+    assertTrustedSender(event);
+    return handler(event, ...args);
+  });
+}
+
+function validateChatPayload(payload) {
+  if (!payload || typeof payload !== 'object' ||
+      typeof payload.message !== 'string' ||
+      !payload.message.trim() || payload.message.length > 8000) {
+    throw new Error('Invalid chat message');
+  }
+  if (payload.history != null && !Array.isArray(payload.history)) {
+    throw new Error('Invalid chat history');
+  }
+  const history = (payload.history || []).slice(-6).map((item) => {
+    if (!item || !['user', 'assistant'].includes(item.role) ||
+        typeof item.content !== 'string') {
+      throw new Error('Invalid chat history item');
+    }
+    return { role: item.role, content: item.content.slice(0, 3000) };
+  });
+  return { message: payload.message.trim(), history };
+}
 
 let mainWindow;
 let appConfig = null;
@@ -90,42 +137,116 @@ function deliverQuestion(question) {
         pendingLaunchQuestions.push(question);
     }
 }
-ipcMain.handle('assistant-launch-ready', () => {
+registerTrustedIpc('assistant-launch-ready', () => {
     rendererAssistantReady = true;
     return pendingLaunchQuestions.splice(0);
 });
 
-const gotTheLock = app.requestSingleInstanceLock();
+
+
+const startupLaunch = extractLaunchQuestion(process.argv);
+
+const gotTheLock = app.requestSingleInstanceLock({
+    launchQuestion: startupLaunch.question || null
+});
 
 if (!gotTheLock) {
     app.quit();
-    process.exit(0);
 } else {
-    // ONLY handle second-instance attempts here
-    app.on('second-instance', (event, commandLine, workingDirectory) => {
-        // A second EXE invocation sends its question to the existing process.
-        // Do not reset the chatConversationId or create a new window.
-        const { question } = extractLaunchQuestion(commandLine);
-        if (mainWindow && !mainWindow.isDestroyed()) {
-            if (mainWindow.isMinimized()) mainWindow.restore();
-            mainWindow.show();
-            mainWindow.focus();
+    app.on(
+        "second-instance",
+        (event, commandLine, workingDirectory, additionalData) => {
+
+            // Prefer the structured question sent by the new process.
+            // Fall back to command-line extraction for compatibility.
+            const question =
+                typeof additionalData?.launchQuestion === "string"
+                    ? additionalData.launchQuestion
+                    : extractLaunchQuestion(commandLine).question;
+
+            if (mainWindow && !mainWindow.isDestroyed()) {
+                if (mainWindow.isMinimized()) {
+                    mainWindow.restore();
+                }
+
+                mainWindow.show();
+                mainWindow.focus();
+            }
+
+            if (question && question.trim()) {
+                deliverQuestion(question.trim());
+            }
         }
-        deliverQuestion(question);
-    });
+    );
 }
+
 
 function getDateFileName(sender, language) {
     const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
     return `/BPAL_ASSISTANT/${today}_${user.userId}_${user.userName}_${language}_BPAL_ASSISTANT_LOG.txt`;
 }
 
+function setupChatContextMenu(win) {
+    win.webContents.on('context-menu', (event, params) => {
+        const isEditable = params.isEditable;
+        const hasSelection = Boolean(params.selectionText?.trim());
+
+        const menuItems = [];
+
+        if (isEditable) {
+            menuItems.push(
+                {
+                    label: 'Cut',
+                    role: 'cut',
+                    enabled: hasSelection
+                },
+                {
+                    label: 'Copy',
+                    role: 'copy',
+                    enabled: hasSelection
+                },
+                {
+                    label: 'Paste',
+                    role: 'paste'
+                },
+                { type: 'separator' },
+                {
+                    label: 'Select All',
+                    role: 'selectAll'
+                }
+            );
+        } else {
+            menuItems.push(
+                {
+                    label: 'Copy',
+                    role: 'copy',
+                    enabled: hasSelection
+                },
+                {
+                    label: 'Select All',
+                    role: 'selectAll'
+                }
+            );
+        }
+
+        Menu.buildFromTemplate(menuItems).popup({
+            window: win
+        });
+    });
+}
+
 function getLogFilePath() {
-  const safe = (s) => String(s ?? '').trim().replace(/[^\w.-]+/g, '_') || 'unknown';
+  // Use the identity parsed at startup. It is available BEFORE the renderer
+  // submits --ask questions and does not change when CMS content loads.
+  const args = commandLineArgs || {};
+  const launchData = args.data && typeof args.data === 'object' ? args.data : {};
+  const safe = (value) => String(value ?? '').trim().replace(/[^\w.-]+/g, '_') || 'unknown';
   const today = new Date().toLocaleDateString('en-CA');
-  const lang = commandLineArgs?.language || 'en';
-  const name = `${today}_${safe(user.userId)}_${safe(user.userName)}_${lang}_BPAL_ASSISTANT_LOG.txt`;
-  return path.join(logsFolder || __dirname, 'BPAL_ASSISTANT', name);
+  const userId = safe(args.userId || 'default');
+  const userName = safe(launchData.userName || 'unknown');
+  const lang = String(args.language || 'en').toLowerCase() === 'fr' ? 'fr' : 'en';
+  const filename = `${today}_${userId}_${userName}_${lang}_BPAL_ASSISTANT_LOG.txt`;
+  return path.join(logsFolder || __dirname, 'BPAL_ASSISTANT', filename);
 }
 
 // Parse command line arguments
@@ -150,18 +271,24 @@ function createWindow() {
         height: 800,
         alwaysOnTop: true,
         webPreferences: {
-            //  CRITICAL SETTINGS FOR CHAT TO WORK
-            nodeIntegration: true,
+            // UI has no Node.js access. Only the approved preload bridge can use IPC.
+            nodeIntegration: false,
             contextIsolation: true,
+            sandbox: true,
             webSecurity: true,
             allowRunningInsecureContent: false,
-            // -------------------------------------
             preload: path.join(__dirname, 'preload.js'),
         },
         icon: path.join(__dirname, 'icon.ico')
     });
 
 
+    setupChatContextMenu(mainWindow);
+
+    // Customer HTML stays on the original local page; it cannot navigate
+    // into a remote site with our privileged preload bridge attached.
+    mainWindow.webContents.on('will-navigate', (event) => event.preventDefault());
+    mainWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
 
     rendererAssistantReady = false;
     mainWindow.loadFile(path.join(__dirname, 'index.html'));
@@ -181,7 +308,7 @@ function customerApiConfig() {
 
 let chatConversationId = null;
 // The chat tab needs only user identity; it must not block on CMS lists/images.
-ipcMain.handle('get-chat-context', () => {
+registerTrustedIpc('get-chat-context', () => {
   const args = commandLineArgs || parseArgs();
   const data = args?.data && typeof args.data === 'object' ? args.data : {};
   return {
@@ -190,7 +317,7 @@ ipcMain.handle('get-chat-context', () => {
     data: { userName: data.userName || null }
   };
 });
-ipcMain.handle('chat-status', async () => {
+registerTrustedIpc('chat-status', async () => {
   const config = customerApiConfig();
   if (!config.configured) {
     return { configured: false, provider: 'fastapi', conceptCount: null, reason: config.reason };
@@ -213,8 +340,9 @@ async function chatViaBackend(message, history) {
     retrievalCount: result.retrieval_count, modelProvider: result.model_provider };
 }
 
-ipcMain.handle('chat-ask-stream', async (event, { message, history = [] } = {}) => {
+registerTrustedIpc('chat-ask-stream', async (event, { message, history = [] } = {}) => {
   try {
+    ({ message, history } = validateChatPayload({ message, history }));
     const result = await chatViaBackend(message, history);
     // /chat currently returns a complete answer, not a streamed response.
     if (!event.sender.isDestroyed()) event.sender.send('chat-chunk', result.answer);
@@ -225,8 +353,11 @@ ipcMain.handle('chat-ask-stream', async (event, { message, history = [] } = {}) 
   }
 });
 
-ipcMain.handle('chat-ask', async (_event, { message, history = [] } = {}) => {
-  try { return await chatViaBackend(message, history); }
+registerTrustedIpc('chat-ask', async (_event, { message, history = [] } = {}) => {
+  try {
+    ({ message, history } = validateChatPayload({ message, history }));
+    return await chatViaBackend(message, history);
+  }
   catch (error) {
     console.error('[chat-ask]', error.message);
     return { success: false, error: error.message };
@@ -236,39 +367,34 @@ ipcMain.handle('chat-ask', async (_event, { message, history = [] } = {}) => {
 // =========================================================
 //  NEW: Email Generation Handler
 // =========================================================
-ipcMain.handle('create-email-file', async (event, options = {}) => {
-    try {
-       //  console.log('Creating email file with options:', options);
-
-        const result = RegistryHelper.createEmailFile({
-            toEmail: options.toEmail,
-            subject: options.subject || 'BPAL Assistant',
-            attachmentPath: options.attachmentPath
-        },user.userId,user.getDetailsString());
-
-        return result;
-
-    } catch (error) {
-        console.error('Error in create-email-file handler:', error);
-        return { success: false, error: error.message };
-    }
-});
-
-// Handler to get emailer configuration (useful for UI)
-ipcMain.handle('get-emailer-config', async (event) => {
-    try {
-        const config = RegistryHelper.loadEmailerConfig();
-        return { success: true, config };
-    } catch (error) {
-        console.error('Error getting emailer config:', error);
-        return { success: false, error: error.message };
-    }
+// The renderer can request a support email, but cannot choose a recipient,
+// arbitrary attachment or SMTP configuration. The existing emailer INI remains
+// a main-process-only dependency.
+registerTrustedIpc('create-email-file', async () => {
+  try {
+    const logFilePath = getLogFilePath();
+    const result = RegistryHelper.createEmailFile({
+      subject: 'BPAL Assistant - Support Request',
+      attachmentPath: fs.existsSync(logFilePath) ? logFilePath : '',
+    }, user.userId, user.getDetailsString());
+    // RegistryHelper.createEmailFile returns emailerConfig internally.
+    // NEVER forward it: it includes the emailer's SMTP password.
+    return {
+      success: result.success === true,
+      filePath: result.success ? result.filePath : undefined,
+      filename: result.success ? result.filename : undefined,
+      error: result.success ? undefined : result.error,
+    };
+  } catch (error) {
+    console.error('Error creating support email:', error);
+    return { success: false, error: error.message };
+  }
 });
 
 function formatLogEntry(messageEntry, sender, language) {
     const timestamp = new Date().toLocaleString('en-CA'); // Format: YYYY-MM-DD HH:MM:SS
     const languageLabel = language === 'en' ? 'English' : 'Français';
-    const senderLabel = sender === 'assistant' ? 'Assistant' : sender;
+    const senderLabel = sender === 'assistant' ? 'Assistant' : sender === 'user' ? 'User' : sender;
 
     return `${'='.repeat(80)}
 [${timestamp}]
@@ -279,11 +405,16 @@ ${messageEntry}
 `;
 }
 
-ipcMain.handle('save-message', async (event, messageData) => {
+registerTrustedIpc('save-message', async (event, messageData) => {
     try {
-        const { text, sender, language } = messageData;
+        const { text, sender, language } = messageData || {};
+        if (typeof text !== 'string' || text.length > 100000 ||
+            !['assistant', 'user'].includes(sender) ||
+            !['en', 'fr'].includes(language)) {
+          throw new Error('Invalid message log payload');
+        }
 
-                const currentFilePath = getLogFilePath();
+        const currentFilePath = getLogFilePath();
         // Ensure directory exists
         const dir = path.dirname(currentFilePath);
         if (!fs.existsSync(dir)) {
@@ -400,7 +531,7 @@ async function loadHelpCenterDataOnce() {
 }
 // Share simultaneous requests from the Tips and other renderer widgets.
 // Clear immediately on completion so later explicit reloads still get fresh CMS data.
-ipcMain.handle('get-help-center-data', () => {
+registerTrustedIpc('get-help-center-data', () => {
   if (!pendingHelpCenterData) {
     pendingHelpCenterData = loadHelpCenterDataOnce().finally(() => {
       pendingHelpCenterData = null;
@@ -409,7 +540,7 @@ ipcMain.handle('get-help-center-data', () => {
   return pendingHelpCenterData;
 });
 
-ipcMain.handle('get-user-preference', async () => {
+registerTrustedIpc('get-user-preference', async () => {
     // Kept your existing stub
     return { success: true, prefKey: 'stub_pref_key' };
 });
@@ -496,7 +627,7 @@ async function initializeApp() {
 // =========================================================
 //  Get Current Log File Path
 // =========================================================
-ipcMain.handle('get-log-file-path', async (event) => {
+registerTrustedIpc('get-log-file-path', async (event) => {
     try {
         const language = commandLineArgs?.language || 'en';
         const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD

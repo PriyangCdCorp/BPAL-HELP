@@ -101,11 +101,11 @@ document.addEventListener('DOMContentLoaded', function () {
        //  console.log('Initializing Help Center...');
         // alert("in here");
         // Request data from main process
-        if (window.electron && window.electron.ipcRenderer) {
+        if (window.bpal) {
             // Electron environment
            //  console.log('Electron environment detected');
 
-            window.electron.ipcRenderer.invoke('get-help-center-data').then((response) => {
+            window.bpal.getHelpCenterData().then((response) => {
     // Always set defaults safely
     currentLanguage = response?.language || 'en';
     currentUser = response?.userId || 'default';
@@ -1027,12 +1027,8 @@ async function sendMessage() {
 
     try {
         // Try to use AI API if available
-        if (window.electron && window.electron.ipcRenderer) {
-            const response = await window.electron.ipcRenderer.invoke('chat-message', {
-                question: message,
-                user: currentUser,
-                database: currentDatabase
-            });
+        if (window.bpal) {
+            const response = await window.bpal.askChat({ message, history: [] });
 
             if (response && response.success) {
                 const aiMsg = document.createElement('div');
